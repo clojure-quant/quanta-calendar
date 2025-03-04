@@ -35,12 +35,7 @@ jobs:
       run: clojure -M:lint
     - name: test-clj
       run: |
-         ./run-tests.sh
-    #    cd lib/indicator && clojure -X:test
-    #    cd ../calendar && clojure -X:test
-    #    cd ../trade && clojure -X:test
-    #- name: cloverage
-    #  run: clojure -M:cloverage
+         clojure -X:test
     - name: Release
       if: success()
       # if: github.event_name == 'push'
