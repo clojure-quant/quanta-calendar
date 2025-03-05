@@ -38,11 +38,11 @@
    it will be the live flow. 
    live-flow needs to set dag env :dt-live, for testing
    you could use quanta.calendar.scheduler/get-calendar-flow"
-  [dag cal]
-  (let [opts @(:opts dag)
+  [env {:keys [calendar]}]
+  (let [opts @(get-in env [:dag :opts])
         dt (:dt opts)]
     (if dt
-      (get-historic-calendar-flow cal dt)
-      (let [get-live-flow (or (:dt-live (:env dag))
+      (get-historic-calendar-flow calendar dt)
+      (let [get-live-flow (or (:dt-live opts)
                               (create-live-calendar opts))]
-        (get-live-flow cal)))))
+        (get-live-flow calendar)))))

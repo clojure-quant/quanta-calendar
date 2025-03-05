@@ -12,19 +12,19 @@
 
 ;; historic
 
-(def dag-historic {:opts (atom {:dt (t/instant)})})
+(def dag-historic {:dag {:opts (atom {:dt (t/instant)})}})
 
 (def dt-cell-historic
-  (get-calendar dag-historic [:crypto :m]))
+  (get-calendar dag-historic {:calendar [:crypto :m]}))
 
 (get-val dt-cell-historic)
 
 ;; live
 
-(def dag-live {:opts (atom {})})
+(def dag-live {:dag {:opts (atom {})}})
 
 (def dt-cell-live
-  (get-calendar dag-live [:crypto :m]))
+  (get-calendar dag-live {:calendar [:crypto :m]}))
 
 (get-val dt-cell-live)
 
