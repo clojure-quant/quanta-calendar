@@ -2,7 +2,7 @@
   (:require
    [missionary.core :as m]
    [tick.core :as t]
-   [quanta.calendar.dag :refer [get-calendar]]))
+   [quanta.calendar.env :refer [get-calendar]]))
 
 (defn get-val [cell]
   (->> cell

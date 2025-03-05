@@ -1,4 +1,4 @@
-(ns quanta.calendar.dag
+(ns quanta.calendar.env
   (:require
    [missionary.core :as m]
    [ta.calendar.core :refer [current-close]]
