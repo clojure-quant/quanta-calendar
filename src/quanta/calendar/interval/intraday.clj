@@ -47,8 +47,12 @@
     ;(assoc this :bday (i/move-prior bday))
     this))
 
-(defn current-or-next-intraday [market interval dt]
-  (let [session (s/current-or-next-session market dt)
-        intraday (df/current-or-next-intraday-block interval dt)
-        is (intraday-session. session intraday)]
-    is))
+(defn next-upcoming-close-intraday [market interval dt]
+  (let [session (s/next-upcoming-close-session market dt)
+        intraday (df/next-upcoming-close-dayfraction interval dt)
+        is (intraday-session. session intraday)
+        id-close-dt (-> is i/current :close)]
+    (if (t/<= id-close-dt dt)
+      (i/move-next is)
+      is)))
+

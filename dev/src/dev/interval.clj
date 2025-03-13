@@ -9,7 +9,7 @@
    [quanta.calendar.interval.intraday :as id]))
 
 ;; business day
-(def day (bd/current-or-next-business-day caldb/week-5 (t/instant)))
+(def day (bd/next-upcoming-close-business-day caldb/week-5 (t/instant)))
 
 day
 
@@ -20,23 +20,23 @@ day
 (take 10 (i/next-seq day))
 (take 10 (i/prior-seq day))
 
-(def day6 (bd/current-or-next-business-day caldb/week-6-sunday
+(def day6 (bd/next-upcoming-close-business-day caldb/week-6-sunday
                                            (t/instant)))
 
 (take 10 (i/next-seq day6))
 
  ;; day fraction
 
-(def m30 (df/current-or-next-intraday-block :m30 (t/instant)))
+(def m30 (df/next-upcoming-close-dayfraction :m30 (t/instant)))
 (take 10 (i/next-seq m30))
 
-(def h1 (df/current-or-next-intraday-block :h (t/instant)))
+(def h1 (df/next-upcoming-close-dayfraction :h (t/instant)))
 (take 10 (i/next-seq h1))
 
-(def h4 (df/current-or-next-intraday-block :h4 (t/instant)))
+(def h4 (df/next-upcoming-close-dayfraction :h4 (t/instant)))
 (take 10 (i/next-seq h4))
 
-(def h12 (df/current-or-next-intraday-block :h12 (t/instant)))
+(def h12 (df/next-upcoming-close-dayfraction :h12 (t/instant)))
 (take 10 (i/next-seq h12))
 
 ;; session
@@ -44,9 +44,9 @@ day
 (def forex (caldb/get-calendar :forex))
 forex
 
-(def s-fx (s/current-or-next-session forex (t/instant)))
+(def s-fx (s/next-upcoming-close-session forex (t/instant)))
 
-(def s-eu (s/current-or-next-session (caldb/get-calendar :eu) (t/instant)))
+(def s-eu (s/next-upcoming-close-session (caldb/get-calendar :eu) (t/instant)))
 s-fx
 
 (i/current s-fx)
@@ -56,17 +56,17 @@ s-fx
 
 ;; intraday
 
-(def s (id/current-or-next-intraday forex :h (t/instant)))
+(def s (id/next-upcoming-close-intraday forex :h (t/instant)))
 
 (i/current s)
 
 (take 2 (i/next-seq s))
 (take 100 (i/next-seq s))
 
-(def m30-id (id/current-or-next-intraday forex :m30 (t/instant)))
+(def m30-id (id/next-upcoming-close-intraday forex :m30 (t/instant)))
 
 (-> (take 500 (i/next-seq m30-id))
     println)
 
-(def h4-id (id/current-or-next-intraday forex :h4 (t/instant)))
+(def h4-id (id/next-upcoming-close-intraday forex :h4 (t/instant)))
 (take 100 (i/next-seq h4-id))

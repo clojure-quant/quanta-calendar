@@ -84,7 +84,7 @@
   (move-prior [this]
     (assoc this :dt  (t/<< dt duration))))
 
-(defn current-or-next-intraday-block [interval dt]
+(defn next-upcoming-close-dayfraction [interval dt]
   (let [[n u] (get interval-dict interval)
         clock-instant (t/instant dt) ; 
         clock-d (t/date clock-instant)
@@ -114,7 +114,7 @@
   (block-time :hours 2 1)
   (block-time :hours 2 3)
 
-  (def s (current-or-next-intraday-block :m5 (t/instant)))
+  (def s (next-upcoming-close-dayfraction :m5 (t/instant)))
 
   (take 2 (i/next-seq s))
   (take 10 (i/next-seq s))

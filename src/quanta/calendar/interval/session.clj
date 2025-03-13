@@ -2,7 +2,7 @@
   (:require
    [tick.core :as t]
    [quanta.calendar.interval :as i]
-   [quanta.calendar.interval.business :refer [current-or-next-business-day] :as b]))
+   [quanta.calendar.interval.business :as b]))
 
 (defrecord session [timezone open close bday]
   i/interval
@@ -32,12 +32,14 @@
   (move-prior [this]
     (assoc this :bday (i/move-prior bday))))
 
-(defn current-or-next-session [{:keys [timezone open close week] :as market}
+(defn next-upcoming-close-session [{:keys [timezone open close week] :as market}
                                dt]
-  (let [dt-session (t/in dt timezone)
-        bd (current-or-next-business-day week dt-session)
+  (let [session-dt (t/in dt timezone)
+        bd (b/next-upcoming-close-business-day week session-dt)
         s (session. timezone open close bd)
-        close-s (-> s i/current :close)]
-    (if (t/< dt-session close-s)
+        session-close-dt (-> s i/current :close)]
+    ;(println "session-close: " session-close-dt)
+    ;(println "session-time: " session-dt)
+    (if (t/<= session-close-dt session-dt)
       (i/move-next s)
       s)))

@@ -32,7 +32,7 @@
                dt
                (recur (prior-day dt)))))))
 
-(defn current-or-next-business-day [week dt]
+(defn next-upcoming-close-business-day [week dt]
   (let [bd (businessday. week (t/date dt))]
     (if (day-open? week (i/current bd))
       bd
