@@ -2,7 +2,9 @@
   (:require
    [tick.core :as t]
    [tablecloth.api :as tc]
-   [quanta.calendar.core :refer [current-close next-close]]))
+   [quanta.calendar.core :refer [current-close next-close]]
+   [quanta.calendar.db.calendars :refer [get-calendar-timezone]]
+   ))
 
 (defn other-cal-link-fast
   "returns a date column.
@@ -12,20 +14,33 @@
    algos."
   [dt-col calendar]
   (let [next-dt-a (atom (->> (dt-col 0)
-                             (current-close calendar)))]
+                             (current-close calendar)))
+        align-next (fn [next-dt row-dt]
+                     (loop [next-dt (next-close calendar next-dt)]
+                       ; when we align the next value, it might
+                       ; be that the input ds misses bars, so we 
+                       ; might have to jump several bars to the future
+                       (if (t/> row-dt next-dt)
+                         (recur (next-close calendar next-dt))
+                         next-dt)))]
     (map
      (fn [row-dt]
        (let [next-dt @next-dt-a]
          (if (t/<= row-dt next-dt)
            next-dt
-           (let [next-dt (next-close calendar next-dt)]
+           (let [next-dt (align-next next-dt row-dt)]
+             (println)
              (reset! next-dt-a next-dt)
              next-dt))))
      dt-col)))
 
 (defn add-date-group-calendar [ds calendar]
-  (tc/add-column ds
-                 :date-group (other-cal-link-fast (:date ds) calendar)))
+  (let [[market-kw interval-kw] calendar
+        calendar-tz (get-calendar-timezone market-kw)
+        ds-cal (tc/map-columns ds :date #(t/in % calendar-tz))
+        col-date (:date ds-cal)]
+    (tc/add-column ds
+                   :date-group (other-cal-link-fast col-date calendar))))
 
 ;; COMPRESS
 

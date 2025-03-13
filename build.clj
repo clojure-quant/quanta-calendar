@@ -4,7 +4,7 @@
    [clojure.tools.build.api :as b]))
 
 (def lib 'io.github.clojure-quant/quanta-calendar)
-(def version (format "0.5.%s" (b/git-count-revs nil)))
+(def version (format "0.6.%s" (b/git-count-revs nil)))
 
 (defn jar [opts]
   (-> opts
