@@ -29,6 +29,7 @@ day
 
 (def m30 (df/next-upcoming-close-dayfraction :m30 (t/instant)))
 (take 10 (i/next-seq m30))
+(take 10 (i/prior-seq m30))
 
 (def h1 (df/next-upcoming-close-dayfraction :h (t/instant)))
 (take 10 (i/next-seq h1))
@@ -38,6 +39,8 @@ day
 
 (def h12 (df/next-upcoming-close-dayfraction :h12 (t/instant)))
 (take 10 (i/next-seq h12))
+(take 20 (i/prior-seq h12))
+
 
 ;; session
 
@@ -53,6 +56,7 @@ s-fx
 
 (take 2 (i/next-seq s-fx))
 (take 10 (i/next-seq s-fx))
+(take 10 (i/prior-seq s-fx))
 
 ;; intraday
 
@@ -62,6 +66,7 @@ s-fx
 
 (take 2 (i/next-seq s))
 (take 100 (i/next-seq s))
+(take 100 (i/prior-seq s))
 
 (def m30-id (id/next-upcoming-close-intraday forex :m30 (t/instant)))
 

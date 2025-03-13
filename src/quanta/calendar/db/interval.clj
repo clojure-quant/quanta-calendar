@@ -9,6 +9,9 @@
 (def intraday-intervals
   (->> df/interval-dict keys (into #{})))
 
+(def all-intervals 
+  (conj intraday-intervals :d))
+
 (defn next-upcoming-close [[market-kw interval-kw] dt]
   (if-let [market (caldb/get-calendar market-kw)]
     (cond
@@ -48,6 +51,7 @@
 (comment
 
   intraday-intervals
+  all-intervals
 
   ;
   )
