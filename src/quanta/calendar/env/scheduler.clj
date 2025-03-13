@@ -7,39 +7,35 @@
    [quanta.calendar.db.interval :refer [next-upcoming-close last-finished-close all-intervals]])
   (:import [missionary Cancelled]))
 
-(defn scheduler
+(defn scheduler-f
   "returns a missionary flow
    fires current and all upcoming timestamps for a calendar"
-  [calendar upcoming?]
+  [calendar current]
    (m/ap
-    (let [current (if upcoming? 
-                    (next-upcoming-close calendar (t/instant))
-                    (last-finished-close calendar (t/instant)))]
-      (println "live-calendar " calendar " starting with: " (i/current current))
-      (when-not upcoming?
-        (m/amb current))
-      (try
-        (loop [c current]
-          (let [current-dt-long (-> (t/instant) t/long)
-                next-dt-instant  (-> c i/current :close )
-                next-dt-long  (t/long next-dt-instant)
-                diff-ms (* 1000 (- next-dt-long current-dt-long))]
-            (when (> diff-ms 0)
-              (println "live-calendar " calendar " sleeping for ms: " diff-ms " until: " next-dt-instant)
-              (m/? (m/sleep diff-ms c))))
-          (m/amb
-           c
-           (recur (i/move-next c))))
-        (catch Cancelled cancel
-          (println "live-calendar " calendar " stopped."))))))
+    (println "live-calendar " calendar " starting with: " (i/current current))
+    ;(m/amb current)
+    (try
+      (loop [c current]
+        (let [current-dt-long (-> (t/instant) t/long)
+              next-dt-instant  (-> c i/current :close )
+              next-dt-long  (t/long next-dt-instant)
+              diff-ms (* 1000 (- next-dt-long current-dt-long))]
+          (when (> diff-ms 0)
+            (println "live-calendar " calendar " sleeping for ms: " diff-ms " until: " next-dt-instant)
+            (m/? (m/sleep diff-ms c))))
+        (m/amb
+         c
+         (recur (i/move-next c))))
+      (catch Cancelled cancel
+        (println "live-calendar " calendar " stopped.")))))
 
-
-
-  ;(m/stream
-  ;(m/signal
-          )
-
-
+ 
+ (defn scheduler [calendar]
+   (let [current (last-finished-close calendar (t/instant))]
+     (->> (scheduler-f calendar current)
+          (m/reductions (fn [r v] v) (i/current current))
+          (m/relieve {})
+          (m/signal))))
 
 
 (defn all-calendars []
@@ -56,20 +52,20 @@
 
 (comment
 
-  (m/? (->> (scheduler [:us :d] false)
+  (m/? (->> (scheduler [:us :d])
             (m/eduction (take 1) (map i/current))
             (m/reduce conj)))
 
   (do (println "start time: " (t/instant))
       (println "Result: "
                (m/? (->> ;(scheduler [:forex :m])
-                     (scheduler [:us :m] false)
+                     (scheduler [:crypto :m])
                      (m/eduction (take 2) (map i/current))
                      (m/reduce conj))))
       (println "end time: " (t/instant)))
   
 
-  (m/? (->> (scheduler [:crypto :m])
+  (m/? (->> (scheduler [:forex :m])
             (m/eduction (take 2))
             (m/reduce conj)))
 
