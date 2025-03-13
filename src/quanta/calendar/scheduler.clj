@@ -8,7 +8,6 @@
   (:import [missionary Cancelled]))
 
 ;; move-in from quanta.algo.dag.calendar.live
-;; OUTDATED. MOVED TO QUANTA-CALENDAR.
 
 (defn scheduler
   "returns a missionary flow

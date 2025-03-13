@@ -25,13 +25,9 @@
    t/THURSDAY t/FRIDAY t/SATURDAY t/SUNDAY))
 
 (def calendars
-  {:forex1 {:open (t/new-time 17 0 0)
-            :close (t/new-time 16 30 0)
-            :week week-6-sunday
-            :timezone "America/New_York"}
-   :forex {:open (t/new-time 17 0 0)
+  {:forex {:open (t/new-time 17 0 0)
            :close (t/new-time 16 30 0)
-           :week week-5
+           :week week-5 ; old: week-6-sunday
            :timezone "America/New_York"}
    :forex-no-asia {:open (t/new-time 3 0 0)
                    :close (t/new-time 16 0 0)

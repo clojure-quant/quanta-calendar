@@ -3,8 +3,7 @@
    [tick.core :as t]
    [tablecloth.api :as tc]
    [quanta.calendar.core :refer [current-close next-close]]
-   [quanta.calendar.db.calendars :refer [get-calendar-timezone]]
-   ))
+   [quanta.calendar.db.calendars :refer [get-calendar-timezone]]))
 
 (defn other-cal-link-fast
   "returns a date column.

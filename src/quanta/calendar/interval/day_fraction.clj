@@ -1,8 +1,9 @@
-(ns quanta.calendar.impl.day-fraction
+(ns quanta.calendar.interval.day-fraction
   (:require
    [tick.core :as t]
-   [quanta.calendar.impl.business :as b]
-   [quanta.calendar.util :as u]))
+   [quanta.calendar.interval :as i]
+   ;[quanta.calendar.util :as u]
+   ))
 
 ; all divider of 1440 (minutes of day)
 ;1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 15, 16, 18, 20, 24, 30, 32, 36, 40, 48, 60, 72, 80, 90, 96, 120, 144, 160, 180, 240, 288, 360, 480, 720, 1440
@@ -74,20 +75,14 @@
     (t/>> midnight d)))
 
 (defrecord intraday-block [duration dt]
-  b/interval
+  i/interval
   (current [this]
-           {:open (t/<< dt duration)
-            :close dt})
+    {:open (t/<< dt duration)
+     :close dt})
   (move-next [this]
     (assoc this :dt  (t/>> dt duration)))
   (move-prior [this]
-    (assoc this :dt  (t/<< dt duration)))
-  (next-seq [this]
-    (->> (iterate b/move-next this)
-         (map b/current)))
-  (prior-seq [this]
-    (->> (iterate b/move-prior this)
-         (map b/current))))
+    (assoc this :dt  (t/<< dt duration))))
 
 (defn current-or-next-intraday-block [interval dt]
   (let [[n u] (get interval-dict interval)
@@ -106,8 +101,8 @@
   (t/truncate (t/instant) :minutes)
   (def duration (t/new-duration 1.5 :hours))
   (def total-minutes (t/in duration :minutes)) ;; Convert the duration to minutes
-  (u/extract-field (t/instant) :hours)
-  (u/extract-field (t/instant) :minutes)
+  ;(u/extract-field (t/instant) :hours)
+  ;(u/extract-field (t/instant) :minutes)
 
   (block-time :minutes 30 0)
   (block-time :minutes 30 1)
@@ -121,26 +116,8 @@
 
   (def s (current-or-next-intraday-block :m5 (t/instant)))
 
-  (take 2 (b/next-seq s))
-  (take 10 (b/next-seq s))
-
-  (def m30 (current-or-next-intraday-block :m30 (t/instant)))
-  (take 10 (b/next-seq m30))
-
-  (def h1 (current-or-next-intraday-block :h (t/instant)))
-  (take 10 (b/next-seq h1))
-
-  (def h4 (current-or-next-intraday-block :h4 (t/instant)))
-  (take 10 (b/next-seq h4))
-
-  (def h12 (current-or-next-intraday-block :h12 (t/instant)))
-  (take 10 (b/next-seq h12))
-
-  (->  (take 1 (b/next-seq h12))
-       first
-       type
-   )
-   
+  (take 2 (i/next-seq s))
+  (take 10 (i/next-seq s))
 
 ;
   )
