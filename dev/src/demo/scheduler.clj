@@ -2,7 +2,7 @@
   (:require
    [missionary.core :as m]
    [quanta.calendar.interval :as i]
-   [quanta.calendar.env.scheduler :refer [get-calendar-flow]]))
+   [quanta.calendar.env.scheduler :refer [get-calendar-flow get-calendar-flow-close-date]]))
 
 (def cal-f (get-calendar-flow [:crypto :m]))
 
@@ -30,3 +30,18 @@
                (m/eduction (take 1)
                            (map i/current)
                            cal-d-f)))
+
+
+; date test
+
+(def cal-date-f (get-calendar-flow-close-date [:crypto :m]))
+
+(m/? (m/reduce conj
+               (m/eduction (take 1)
+                           cal-date-f)))
+
+(def cal-date-delayed-f (get-calendar-flow-close-date [:crypto :m] 2000))
+
+(m/? (m/reduce conj
+               (m/eduction (take 1)
+                           cal-date-delayed-f)))

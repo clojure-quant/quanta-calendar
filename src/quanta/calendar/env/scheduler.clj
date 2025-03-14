@@ -56,6 +56,23 @@
        (m/? (m/sleep delay-ms))
        cur)))))
 
+(defn get-calendar-flow-close-date
+  "returns a flow of instant for the calendar.
+   depending on the env (and set-dt) the calendar is
+   either live or historic."
+  ([calendar]
+   (->> (get-calendar-flow calendar)
+        (m/eduction
+         (map i/current)
+         (map :close))
+        (m/stream)))
+  ([calendar delay-ms]
+  (->> (get-calendar-flow calendar delay-ms)
+       (m/eduction
+        (map i/current)
+        (map :close))
+       (m/stream))))
+
 (comment
 
   (m/? (->> (scheduler [:us :d])
