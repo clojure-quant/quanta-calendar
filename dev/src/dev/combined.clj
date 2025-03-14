@@ -1,7 +1,7 @@
 (ns dev.combined
   (:require
    [tick.core :as t]
-   [quanta.calendar.combined :refer [combined-event-seq]]
+   [quanta.calendar.env.combined :refer [combined-event-seq]]
    [clojure.pprint :refer [print-table]]))
 
 (def start-dt (t/now))

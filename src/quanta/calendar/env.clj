@@ -3,7 +3,7 @@
    [missionary.core :as m]
    [ta.calendar.core :refer [current-close]]
    [quanta.calendar.scheduler :as live]
-   [quanta.calendar.combined :refer [combined-event-seq]]))
+   [quanta.calendar.env.combined :refer [combined-event-seq]]))
 
 (defn get-historic-calendar-flow [cal dt]
   (let [[market-kw interval-kw] cal

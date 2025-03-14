@@ -79,6 +79,41 @@
       get-calendar
       :timezone))
 
+(defn day-open? [{:keys [week] :as calendar} dt]
+  (let [day (t/day-of-week dt)]
+    (contains? week day)))
+
+(defn day-closed? [calendar dt]
+  (not (day-open? calendar dt)))
+
+(defn midnight-close? [close]
+  (t/= close (t/new-time 0 0 0)))
+
+
+(defn intraday? [{:keys [open close] :as calendar}]
+  (or (t/< open close)
+      (and (t/= open close)
+           (midnight-close? close))))
+
+(defn overnight? [{:keys [open close] :as calendar}]
+  (and (t/>= open close)
+       (not (midnight-close? close))))
+
+(defn time-open?
+  "expecting a zoned dt in the same timezone as the calendar timezone"
+  [{:keys [open close] :as calendar} dt]
+  (let [time (t/time dt)]
+    (cond
+      (day-closed? calendar dt) false
+      (intraday? calendar) (and (t/>= time open) (or (t/<= time close)
+                                                     (midnight-close? close)))
+      (overnight? calendar) (let [day-before (t/<< dt (t/new-duration 1 :days))
+                                  day-after (t/>> dt (t/new-duration 1 :days))]
+                              (or (and (t/<= time close) (day-open? calendar day-before))
+                                  (and (t/>= time open) (day-open? calendar day-after)))))))
+
+
+
 (comment
   (contains? week-5 t/MONDAY)
   (contains? week-5 t/SUNDAY)

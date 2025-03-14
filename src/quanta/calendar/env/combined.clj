@@ -1,4 +1,4 @@
-(ns quanta.calendar.combined
+(ns quanta.calendar.env.combined
   "the main usecase for a combined calendar is historical simulations."
   (:require
    [tick.core :as t]
