@@ -33,7 +33,7 @@
     (assoc this :bday (i/move-prior bday))))
 
 (defn next-upcoming-close-session [{:keys [timezone open close week] :as market}
-                               dt]
+                                   dt]
   (let [session-dt (t/in dt timezone)
         bd (b/next-upcoming-close-business-day week session-dt)
         s (session. timezone open close bd)

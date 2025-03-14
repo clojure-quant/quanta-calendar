@@ -4,13 +4,12 @@
    [quanta.calendar.interval :as i]
    [quanta.calendar.env.scheduler :refer [get-calendar-flow]]))
 
-
 (def cal-f (get-calendar-flow [:crypto :m]))
 
 ; returns immediately with the last closed bar date
 
-(m/? (m/reduce conj 
-               (m/eduction (take 1) 
+(m/? (m/reduce conj
+               (m/eduction (take 1)
                            (map i/current)
                            cal-f)))
 

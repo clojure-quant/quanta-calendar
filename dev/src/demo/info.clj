@@ -1,13 +1,9 @@
 (ns demo.info
   (:require
    [tick.core :as t]
-   [quanta.calendar.calendar-info :refer [market-info gather-calendar]]
-   ))
-
+   [quanta.calendar.calendar-info :refer [market-info gather-calendar]]))
 
 (def dt (t/instant))
-
-
 
 (market-info :crypto dt)
 
@@ -15,7 +11,6 @@
 ;;     :open? true, 
 ;;     :business true, :
 ;;      as-of-dt #time/zoned-date-time "2024-10-11T21:10:02.760020057Z[UTC]"}
-
 
 (gather-calendar [:crypto :h] dt)
 ;{:calendar [:crypto :h],

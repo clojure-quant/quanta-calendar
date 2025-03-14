@@ -24,21 +24,17 @@
                 :close 116
                 :volume 100}]))
 
-
-
 (-> ds-intraday
     (compress-to-calendar [:crypto :m15]))
 
-  (-> ds-intraday
+(-> ds-intraday
     (compress-to-calendar [:crypto :m30]))
 
-  (-> ds-intraday
+(-> ds-intraday
     (compress-to-calendar [:crypto :h]))
 
-  (-> ds-intraday
+(-> ds-intraday
     (compress-to-calendar [:crypto :d]))
-
-
 
 (def ds (tc/dataset [{:date (t/instant "2021-01-01T15:30:00Z")
                       :open 100
@@ -59,9 +55,8 @@
                       :close 116
                       :volume 100}]))
 
-
 (compress-to-calendar ds [:crypto :d])
 (compress-to-calendar ds [:crypto :h])
 (compress-to-calendar ds [:crypto :m30])
-  
+
 

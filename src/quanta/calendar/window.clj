@@ -1,9 +1,8 @@
 (ns quanta.calendar.window
-   (:require
-    [tick.core :as t]
-    [quanta.calendar.interval :as i]
-    [quanta.calendar.db.interval :refer [next-upcoming-close last-finished-close]]
-    ))
+  (:require
+   [tick.core :as t]
+   [quanta.calendar.interval :as i]
+   [quanta.calendar.db.interval :refer [next-upcoming-close last-finished-close]]))
 
 (defn trailing-window
   "returns a calendar-seq for a calendar of n rows
@@ -19,13 +18,13 @@
      (trailing-window n bar-range))))
 
 (defn fixed-window
- [calendar {:keys [start end] :as window}]
+  [calendar {:keys [start end] :as window}]
   (let [end-interval (next-upcoming-close calendar end)
         end-interval (i/move-prior end-interval)
         interval-seq (i/prior-seq end-interval)
         after-start? (fn [current-interval]
                        (t/>= (:close current-interval) start))]
-      (take-while after-start? interval-seq)
+    (take-while after-start? interval-seq)
       ;(take 2 interval-seq)
     ))
 

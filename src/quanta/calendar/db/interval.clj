@@ -9,7 +9,7 @@
 (def intraday-intervals
   (->> df/interval-dict keys (into #{})))
 
-(def all-intervals 
+(def all-intervals
   (conj intraday-intervals :d))
 
 (defn next-upcoming-close [[market-kw interval-kw] dt]
@@ -29,12 +29,11 @@
                                                         :interval interval-kw
                                                         :dt dt}))))
 
-
 (defn next-upcoming-close-instant [[market-kw interval-kw] dt]
   (->> dt
-      (next-upcoming-close [market-kw interval-kw])
-      (i/current) 
-      :close))
+       (next-upcoming-close [market-kw interval-kw])
+       (i/current)
+       :close))
 
 (defn last-finished-close [[market-kw interval-kw] dt]
   (->> dt
@@ -46,7 +45,6 @@
        (last-finished-close [market-kw interval-kw])
        (i/current)
        :close))
-
 
 (comment
 

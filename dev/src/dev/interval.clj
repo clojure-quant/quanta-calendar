@@ -21,7 +21,7 @@ day
 (take 10 (i/prior-seq day))
 
 (def day6 (bd/next-upcoming-close-business-day caldb/week-6-sunday
-                                           (t/instant)))
+                                               (t/instant)))
 
 (take 10 (i/next-seq day6))
 
@@ -40,7 +40,6 @@ day
 (def h12 (df/next-upcoming-close-dayfraction :h12 (t/instant)))
 (take 10 (i/next-seq h12))
 (take 20 (i/prior-seq h12))
-
 
 ;; session
 

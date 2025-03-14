@@ -5,12 +5,11 @@
    [quanta.calendar.interval.session :as s]
    [quanta.calendar.interval.day-fraction :as df]))
 
-
 (defn position [small big]
-  (cond 
+  (cond
     (t/< (:close (i/current small)) (:open (i/current big)))
     :outside-open
-    
+
     (t/> (:open (i/current small)) (:close (i/current big)))
     :outside-close
 
@@ -19,17 +18,16 @@
 
     (t/> (:close (i/current small)) (:close (i/current big)))
     :overlap-close
-    
+
     :else
     :inside))
-
 
 (defrecord intraday-session [session intraday]
   i/interval
   (current [this]
     (let [p (position intraday session)]
       (case p
-        :overlap-open 
+        :overlap-open
         {:open (t/instant (:open (i/current session)))
          :close (:close (i/current intraday))
          :short :open}
@@ -47,7 +45,7 @@
         (case p
           :outside-open ; intraday is prior to session -> next intraday
           (recur s (i/move-next i))
-          
+
           :outside-close ; intraday is after session -> next session
           (recur (i/move-next s) i)
 
@@ -60,10 +58,10 @@
         (case p
           :outside-open ; intraday is prior to session  -> prior session
           (recur (i/move-prior s) i)
-                    
+
           :outside-close ; intraday is after session S-> prior intraday
-          (recur s (i/move-prior i))          
-          
+          (recur s (i/move-prior i))
+
           ; otherwise we have an overlap 
           (assoc this :session s :intraday i))))))
 

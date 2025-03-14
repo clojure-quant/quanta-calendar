@@ -1,9 +1,9 @@
 (ns quanta.calendar.upcoming-future-test
-   (:require
-    [clojure.test :refer :all]
-    [tick.core :as t]
-    [quanta.calendar.db.interval :refer [next-upcoming-close-instant
-                                         last-finished-close-instant]]))
+  (:require
+   [clojure.test :refer :all]
+   [tick.core :as t]
+   [quanta.calendar.db.interval :refer [next-upcoming-close-instant
+                                        last-finished-close-instant]]))
 
 (defn upcoming-is-future? [market dt]
   (let [close (next-upcoming-close-instant market dt)]
@@ -21,7 +21,6 @@
 (def dt-forex-close
   (-> (to-est "2025-03-13T16:30:00") (t/instant)))
 
-
 (deftest upcoming-close-is-in-the-future
   (testing "upcoming daily (is future)"
     (is (upcoming-is-future? [:forex :d] dt))
@@ -31,8 +30,7 @@
     (is (upcoming-is-future? [:forex :d] dt-forex-close))
     (is (upcoming-is-future? [:crypto :d] dt-forex-close))
     (is (upcoming-is-future? [:eu :d] dt-forex-close))
-    (is (upcoming-is-future? [:us :d] dt-forex-close))
-    )
+    (is (upcoming-is-future? [:us :d] dt-forex-close)))
   (testing "finished  daily (is past)"
     (is (finished-is-past? [:forex :d] dt))
     (is (finished-is-past? [:crypto :d] dt))
@@ -44,10 +42,6 @@
     (is (finished-is-past? [:us :d] dt-forex-close)))
 
   (testing "upcoming hour (is future)"
-    (is (upcoming-is-future? [:forex :d] dt)))
-  
-
-
-  )
+    (is (upcoming-is-future? [:forex :d] dt))))
 
 

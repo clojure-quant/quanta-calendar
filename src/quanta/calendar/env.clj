@@ -19,8 +19,8 @@
    {:calendar {:dt (atom initial-dt)
                :delay-ms delay-ms}}))
 
-(defn get-calendar 
-   "returns a calendar-flow for the calendar.
+(defn get-calendar
+  "returns a calendar-flow for the calendar.
     depending on the env (and set-dt) the calendar is
     either live or historic."
   [env calendar]
@@ -30,18 +30,29 @@
     (m/ap
      (try (let [dt-manual (m/?< (m/watch dt))]
             (println "dt-manual: " dt-manual)
-            (if dt-manual 
+            (if dt-manual
               (last-finished-close calendar dt-manual)
               (m/?> calendar-f)))
           (catch Cancelled _ (m/amb))))))
 
-(defn set-dt 
+(defn get-calendar-close-date
+  "returns a flow of instant for the calendar.
+   depending on the env (and set-dt) the calendar is
+   either live or historic."
+  [env calendar]
+  (->> (get-calendar env calendar)
+       (m/eduction
+        (map i/current)
+        (map :close))
+       (m/stream)))
+
+(defn set-dt
   "env needs to have :calendar (created via create-calendar-env)
    if manual-dt is nil, then get-calendar will return live times,
    if it is set to an instant, then it is historic times."
   [env manual-dt]
   (let [{:keys [dt]} (:calendar env)]
-    (if manual-dt 
+    (if manual-dt
       (println "setting manual-calendar-time to: " manual-dt)
       (println "setting calendar to live-mode"))
     (reset! dt manual-dt)))
@@ -53,4 +64,4 @@
 ; we need to calculate the calendars, then we
 ; can can seed the combined event seq, 
 ; and from that filter the individual calendar events  
-  (combined-event-seq calendars window))
+    (combined-event-seq calendars window))

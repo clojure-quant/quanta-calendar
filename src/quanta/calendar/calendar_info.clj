@@ -2,8 +2,7 @@
   (:require
    [tick.core :as t]
    [quanta.calendar.db.calendars :as caldb]
-   [quanta.calendar.db.interval :refer [next-upcoming-close-instant last-finished-close-instant]]
-   ))
+   [quanta.calendar.db.interval :refer [next-upcoming-close-instant last-finished-close-instant]]))
 
 (defn market-info [market-kw dt]
   (let [cal (caldb/get-calendar market-kw)

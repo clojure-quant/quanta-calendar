@@ -89,7 +89,6 @@
 (defn midnight-close? [close]
   (t/= close (t/new-time 0 0 0)))
 
-
 (defn intraday? [{:keys [open close] :as calendar}]
   (or (t/< open close)
       (and (t/= open close)
@@ -111,8 +110,6 @@
                                   day-after (t/>> dt (t/new-duration 1 :days))]
                               (or (and (t/<= time close) (day-open? calendar day-before))
                                   (and (t/>= time open) (day-open? calendar day-after)))))))
-
-
 
 (comment
   (contains? week-5 t/MONDAY)

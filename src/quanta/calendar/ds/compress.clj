@@ -3,7 +3,7 @@
    [tick.core :as t]
    [tablecloth.api :as tc]
    [quanta.calendar.interval :as i]
-   [quanta.calendar.db.interval :refer [last-finished-close] ]
+   [quanta.calendar.db.interval :refer [last-finished-close]]
    [quanta.calendar.db.calendars :refer [get-calendar-timezone]]))
 
 (defn other-cal-link-fast
