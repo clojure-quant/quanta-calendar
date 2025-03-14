@@ -1,48 +1,56 @@
 (ns quanta.calendar.env
   (:require
    [missionary.core :as m]
-   [ta.calendar.core :refer [current-close]]
-   [quanta.calendar.scheduler :as live]
-   [quanta.calendar.env.combined :refer [combined-event-seq]]))
+   [quanta.calendar.interval :as i]
+   [quanta.calendar.db.interval :refer [last-finished-close]]
+   [quanta.calendar.env.scheduler :refer [get-calendar-flow]]
+   ;[quanta.calendar.env.combined :refer [combined-event-seq]]
+   )
+  (:import [missionary Cancelled]))
 
-(defn get-historic-calendar-flow [cal dt]
-  (let [[market-kw interval-kw] cal
-        current-close (current-close market-kw interval-kw dt)]
-    (m/seed [current-close])))
+(defn create-calendar-env
+  ([]
+   {:calendar {:dt (atom nil)
+               :delay-ms 0}})
+  ([delay-ms]
+   {:calendar {:dt (atom nil)
+               :delay-ms delay-ms}})
+  ([delay-ms initial-dt]
+   {:calendar {:dt (atom initial-dt)
+               :delay-ms delay-ms}}))
 
+(defn get-calendar 
+   "returns a calendar-flow for the calendar.
+    depending on the env (and set-dt) the calendar is
+    either live or historic."
+  [env calendar]
+  (let [{:keys [delay-ms dt]} (:calendar env)
+        calendar-f (get-calendar-flow calendar delay-ms)]
+    (println "calendar-env: " env)
+    (m/ap
+     (try (let [dt-manual (m/?< (m/watch dt))]
+            (println "dt-manual: " dt-manual)
+            (if dt-manual 
+              (last-finished-close calendar dt-manual)
+              (m/?> calendar-f)))
+          (catch Cancelled _ (m/amb))))))
+
+(defn set-dt 
+  "env needs to have :calendar (created via create-calendar-env)
+   if manual-dt is nil, then get-calendar will return live times,
+   if it is set to an instant, then it is historic times."
+  [env manual-dt]
+  (let [{:keys [dt]} (:calendar env)]
+    (if manual-dt 
+      (println "setting manual-calendar-time to: " manual-dt)
+      (println "setting calendar to live-mode"))
+    (reset! dt manual-dt)))
+
+#_(defn fire-backtest-events [calendars window]
 ; firing old events that need to be syncronized with
 ; all calendars needs a little refactoring,
 ; before adding the model, so when it is in cell-spec stage
 ; we need to calculate the calendars, then we
 ; can can seed the combined event seq, 
-; and from that filter the individual calendar events
-
-(defn fire-backtest-events [calendars window]
+; and from that filter the individual calendar events  
   (combined-event-seq calendars window))
-
-(defn create-live-calendar [opts]
-  (let [live-delay-ms (or (:live-delay-ms opts) 0)]
-    (if
-     (= 0 live-delay-ms)
-      live/get-calendar-flow
-      (fn [cal]
-        (m/stream (m/ap (let [live-f (live/get-calendar-flow cal)
-                              dt (m/?> live-f)]
-                          (m/? (m/sleep live-delay-ms))
-                          dt)))))))
-
-(defn get-calendar
-  "returns a calendar-flow for the calendar.
-   reads :dt from dag opts. if dt is set, then
-   the flow will be a historic calculation, otherwise
-   it will be the live flow. 
-   live-flow needs to set dag env :dt-live, for testing
-   you could use quanta.calendar.scheduler/get-calendar-flow"
-  [env {:keys [calendar]}]
-  (let [opts @(get-in env [:dag :opts])
-        dt (:dt opts)]
-    (if dt
-      (get-historic-calendar-flow calendar dt)
-      (let [get-live-flow (or (:dt-live opts)
-                              (create-live-calendar opts))]
-        (get-live-flow calendar)))))

@@ -47,8 +47,16 @@
 
 (def calendar-dict (all-calendars))
 
-(defn get-calendar-flow [calendar]
-  (get calendar-dict calendar))
+(defn get-calendar-flow 
+  ([calendar]
+   (get calendar-dict calendar))
+  ([calendar delay-ms]
+   (m/stream 
+    (m/ap 
+     (let [cal-f (get-calendar-flow calendar)
+                cur (m/?> cal-f)]
+            (m/? (m/sleep delay-ms))
+            cur)))))
 
 (comment
 
