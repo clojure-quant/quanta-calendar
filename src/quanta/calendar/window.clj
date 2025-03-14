@@ -33,5 +33,5 @@
    if end-dt specified then last date equals end-date,
    otherwise end-dt is equal to the most-recent close of the calendar"
   ([trailing-window-seq]
-   {:start  (last trailing-window-seq)
-    :end  (first trailing-window-seq)}))
+   {:start (:close (last trailing-window-seq))
+    :end (:close (first trailing-window-seq))}))
