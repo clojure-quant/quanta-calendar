@@ -67,11 +67,11 @@
          (map :close))
         (m/stream)))
   ([calendar delay-ms]
-  (->> (get-calendar-flow calendar delay-ms)
-       (m/eduction
-        (map i/current)
-        (map :close))
-       (m/stream))))
+   (->> (get-calendar-flow calendar delay-ms)
+        (m/eduction
+         (map i/current)
+         (map :close))
+        (m/stream))))
 
 (comment
 

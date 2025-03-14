@@ -31,7 +31,6 @@
                            (map i/current)
                            cal-d-f)))
 
-
 ; date test
 
 (def cal-date-f (get-calendar-flow-close-date [:crypto :m]))
