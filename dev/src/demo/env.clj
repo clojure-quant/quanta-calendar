@@ -9,7 +9,7 @@
 
 env
 
-(def crypto (get-calendar env [:crypto :m]))
+(def crypto (get-calendar env {:calendar [:crypto :m]}))
 
 crypto
 
@@ -20,8 +20,6 @@ crypto
    #(prn "success " %)
    #(prn "crash " %)))
 
-(stop!)
-
 ;; historic
 
 (set-dt env (t/instant))
@@ -30,19 +28,26 @@ crypto
 
 (set-dt env nil)
 
+(stop!)
+
 ; date
 
-(def crypto (get-calendar-close-date env [:crypto :m]))
+(def crypto2 (get-calendar-close-date env {:calendar [:crypto :m]}))
 
-(def stop!
+(def stop2!
   ((m/reduce (fn [s v]
                (println "dt: " v)
-               (spit "bongo.txt" (str "\ndt: " v) :append true)) nil crypto)
+               (spit "bongo.txt" (str "\ndt: " v) :append true)) nil crypto2)
    #(prn "success " %)
    #(prn "crash " %)))
 
+(set-dt env (t/instant))
 
+(set-dt env (t/instant "2025-02-01T00:13:00Z"))
 
+(set-dt env nil)
+
+(stop2!)
 
 
 

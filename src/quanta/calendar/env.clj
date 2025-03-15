@@ -23,7 +23,8 @@
   "returns a calendar-flow for the calendar.
     depending on the env (and set-dt) the calendar is
     either live or historic."
-  [env calendar]
+  [env {:keys [calendar]}]
+  (assert (:calendar env) "get-calendar env does not contain :calendar")
   (let [{:keys [delay-ms dt]} (:calendar env)
         calendar-f (get-calendar-flow calendar delay-ms)]
     (println "calendar-env: " env)
