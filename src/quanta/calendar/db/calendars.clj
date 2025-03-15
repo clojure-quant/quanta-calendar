@@ -26,7 +26,7 @@
 
 (def calendars
   {:forex {:open (t/new-time 17 0 0)
-           :close (t/new-time 16 30 0)
+           :close (t/new-time 17 0 0)
            :week week-5 ; old: week-6-sunday
            :timezone "America/New_York"}
    :forex-no-asia {:open (t/new-time 3 0 0)
@@ -79,7 +79,7 @@
       get-calendar
       :timezone))
 
-(defn day-open? [{:keys [week] :as calendar} dt]
+(defn day-open? [{:keys [week] :as _calendar} dt]
   (let [day (t/day-of-week dt)]
     (contains? week day)))
 
@@ -89,12 +89,12 @@
 (defn midnight-close? [close]
   (t/= close (t/new-time 0 0 0)))
 
-(defn intraday? [{:keys [open close] :as calendar}]
+(defn intraday? [{:keys [open close] :as _calendar}]
   (or (t/< open close)
       (and (t/= open close)
            (midnight-close? close))))
 
-(defn overnight? [{:keys [open close] :as calendar}]
+(defn overnight? [{:keys [open close] :as _calendar}]
   (and (t/>= open close)
        (not (midnight-close? close))))
 

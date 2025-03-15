@@ -7,10 +7,10 @@
 
 (defn position [small big]
   (cond
-    (t/< (:close (i/current small)) (:open (i/current big)))
+    (t/<= (:close (i/current small)) (:open (i/current big)))
     :outside-open
 
-    (t/> (:open (i/current small)) (:close (i/current big)))
+    (t/>= (:open (i/current small)) (:close (i/current big)))
     :outside-close
 
     (t/< (:open (i/current small)) (:open (i/current big)))
