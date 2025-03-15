@@ -1,9 +1,8 @@
-(ns ta.calendar.day-test
+(ns quanta.calendar.day-test
   (:require
-   [clojure.test :refer :all]
+   [clojure.test :refer [deftest is testing]]
    [tick.core :as t]
-   [quanta.calendar.core :refer [next-close
-                                 trailing-window calendar-seq fixed-window
+   [quanta.calendar.core :refer [next-close fixed-window
                                  close->open-dt open->close-dt]]
    [ta.calendar.data.dates :refer :all]
    [ta.calendar.calendars :as cal]

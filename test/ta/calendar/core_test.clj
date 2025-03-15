@@ -2,7 +2,7 @@
   (:require [clojure.test :refer :all]
             [tick.core :as t]
             [ta.calendar.data.dates :refer :all]
-            [ta.calendar.calendars :as cal]
+            ;[ta.calendar.calendars :as cal]
             [quanta.calendar.core :refer [trailing-window calendar-seq
                                           fixed-window fixed-window-open
                                           close->open-dt open->close-dt]]))

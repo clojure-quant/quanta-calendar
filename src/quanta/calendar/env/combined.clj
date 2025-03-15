@@ -80,9 +80,6 @@
 
 (comment
 
-  ;; window
-  (require '[ta.calendar.window :refer [recent-days-window]])
-
   (def r (cal/trailing-range [:us :d] 10))
   r
 
@@ -94,6 +91,8 @@
 
   (def calendars [[:crypto :h]
                   [:crypto :m]])
+
+  (def days10 {:start (t/instant) :end (t/instant)})
 
   (end-dates (:start days10) calendars)
   (combined-event-seq days10 calendars)

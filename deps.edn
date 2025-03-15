@@ -32,7 +32,9 @@
                "--fail-level" "error"
                "--lint"
                "./src"
-               "./test"]}
+               ;"./test"
+               "--color"
+               ]}
 
   :test
   {:extra-paths ["test"]

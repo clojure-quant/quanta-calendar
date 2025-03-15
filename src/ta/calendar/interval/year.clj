@@ -1,7 +1,6 @@
 (ns ta.calendar.interval.year
   (:require
    [tick.core :as t]
-   [quanta.calendar.util :refer [at-time]]
    [ta.calendar.interval.day :as day]
    [ta.calendar.helper :refer [trading-close-time day-with-close? day1]]))
 

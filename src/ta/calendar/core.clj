@@ -1,11 +1,6 @@
 (ns ta.calendar.core
   (:require
-   [tick.core :as t]
-   [quanta.calendar.core :as cal]
-   [ta.calendar.interval :refer [intervals
-                                 get-calendar-day-duration
-                                 get-calendar-month-duration] :as interval]
-   [ta.calendar.calendars :refer [calendars]]))
+   [quanta.calendar.core :as cal]))
 
 ; TODO:
 ;   this namespace is a wrapper and should be only used for legacy support

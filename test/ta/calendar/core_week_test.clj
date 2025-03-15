@@ -1,7 +1,7 @@
 (ns ta.calendar.core-week-test
   (:require [clojure.test :refer :all]
             [tick.core :as t]
-            [ta.calendar.calendars :as cal]
+            ;[ta.calendar.calendars :as cal]
             [ta.calendar.core :refer [trailing-window calendar-seq fixed-window]]))
 
 (defn to-est [dt-str]

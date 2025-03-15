@@ -9,19 +9,19 @@
  :config-in-comment
  ^:replace
  {:linters
-  {:unresolved-symbol {:level :off}
-   :unused-namespace {:level :off}
-   :unused-binding {:level :off}
-   :unused-referred-var {:level :off :exclude {}}
+  {:unresolved-symbol {:level :warn}
+   :unused-namespace {:level :error}
+   :unused-binding {:level :warn}
+   :unused-referred-var {:level :warn :exclude {}}
    :unused-private-var {:level :off}
-   :redundant-do {:level :off}
-   :unresolved-var  {:level :off}
-   :aliased-namespace-symbol {:level :off}
-   :aliased-namespace-var-usage {:level :off}
-   :type-mismatch {:level :off}
-   :unbound-destructuring-default {:level :off}
-   :unresolved-namespace {:level :off}
-   :invalid-arity {:level :off}
+   :redundant-do {:level :warn}
+   :unresolved-var  {:level :warn}
+   :aliased-namespace-symbol {:level :warn}
+   :aliased-namespace-var-usage {:level :warn}
+   :type-mismatch {:level :warn}
+   :unbound-destructuring-default {:level :warn}
+   :unresolved-namespace {:level :warn}
+   :invalid-arity {:level :warn}
    :conflicting-fn-arity {:level :off}}}
 ; make sure certain macros do not cause errors in the linting.
   :lint-as {promesa.core/let clojure.core/let
@@ -42,12 +42,12 @@
 ; namespaces in this list are those we get for side-effects.
   ; it is also possible to do regex search here:
   ; https://github.com/borkdude/clj-kondo/blob/master/doc/config.md
-  :unused-namespace {:level :off
+  :unused-namespace {:level :warn
                      :exclude [clojure.core.async
                                cljs.core.async
                                cljs.core.async.macros]}
 
-  :unused-binding {:level :off}
+  :unused-binding {:level :warn}
   ; warning: #'taoensso.timbre/warn is referred but never used
 
   :unused-referred-var {:level :off
@@ -63,7 +63,7 @@
 
   :unused-private-var {:level :info}
 
-  :unresolved-symbol {:level :info
+  :unresolved-symbol {:level :warn
                       :exclude-patterns ["idx"]
                        ;:creates-vars {org.httpkit.server/with-channel [con]}
                       }

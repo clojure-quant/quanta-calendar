@@ -5,13 +5,14 @@
    ;[tick.timezone]
    ;[tick.locale-en-us]
    [cljc.java-time.instant :as ti]
-   [cljc.java-time.local-date :as ld]
+   ;[cljc.java-time.local-date :as ld]
    [cljc.java-time.local-date-time :as ldt]
-   [cljc.java-time.zoned-date-time :as zdt]
+   ;[cljc.java-time.zoned-date-time :as zdt]
    [cljc.java-time.zone-offset :refer [utc]]
-   [cljc.java-time.format.date-time-formatter :as fmt :refer [of-pattern
+   ;[cljc.java-time.format.date-time-formatter :as fmt :refer [of-pattern
                                                               ;iso-date
-                                                              ]]))
+    ;                                                          ]]
+   ))
 
 ; #time/date       java.time.LocalDate
 ; #time/date-time  java.time.LocalDateTime
@@ -40,44 +41,14 @@
 
 ;; parsing
 
-(def date-fmt (of-pattern "yyyy-MM-dd"))
-(def datetime-fmt (of-pattern "yyyy-MM-dd HH:mm:ss"))
-
 ;(def row-date-format-
 ;  (fmtick/formatter "yyyy-MM-dd")) ; 2019-08-09
-
-(defn parse-date-only [s]
-  (try
-    (-> s
-        (ld/parse date-fmt))
-    (catch Exception _
-      nil)))
-
-(defn parse-date [s]
-  (try
-    (-> s
-        (ld/parse date-fmt)
-        (t/at  (t/time "00:00:00")))
-    (catch Exception _
-      nil)))
-
-(defn parse-datetime [s]
-  (try
-    (ldt/parse s datetime-fmt)
-    (catch Exception _
-      nil)))
 
 (defn same-date?
   "compares the dates (without time) of 2 ZonedDateTime objects"
   [zdt1 zdt2]
   (= (t/date zdt1) (t/date zdt2)))
 
-(comment
-  (require '[tick.core :as tick])
-  (tick/format (tick/formatter "yyyy-MM-dd")
-               (parse-date "2013-01-08"))
-  ;
-  )
 ;; epoch conversion
 
 (defn datetime->epoch-second [dt]
@@ -236,17 +207,7 @@
   (-> (now-datetime)
       class)
 
-; parse
-  (parse-date "2021-06-05")
-  (parse-datetime "2021-06-05 11:30:01")
-
-  (=   (parse-date "2021-06-05")  (parse-date "2021-06-05"))
-  (=   (parse-date "2021-06-05")   (parse-date "2021-06-06"))
-
-  (=   (parse-datetime "2021-06-05 12:30:01")   (parse-datetime "2021-06-05 12:30:01"))
-  (=   (parse-datetime "2021-06-05 12:30:01")   (parse-datetime "2021-06-05 12:30:02"))
-
-  ; epoch-second
+; epoch-second
   (-> (now-date) ->epoch-second)
   (-> (now-datetime) ->epoch-second)
   (-> (now-datetime) ->epoch-second epoch-second->datetime)
@@ -273,18 +234,8 @@
       ;(epoch-ldt)
       ;(->epoch-second)
       )
-
-  ;; comparison
-  (ldt/is-after
-   (ldt/now)
-   (parse-date "2021-05-16"))
-
-  (ldt/is-after
-   (ldt/now)
-   (parse-date "2022-05-16"))
-
 ;; duration
-  (tick/new-duration 80 :days)
+  (t/new-duration 80 :days)
 
 ; start (-> (* bars 15) tick/minutes tick/ago)
   ; (tick/- now (tick/minutes (* 15 (:position %))))
@@ -303,19 +254,6 @@
 ; (ZonedDateTime/of (LocalDate/parse date date-fmt)
   ;   (LocalTime/parse time)
   ;                EST)
-
-  (-> (now-date)
-      pr-str
-      ;(clojure.edn/read-string {:readers {'time/date tick/date}})
-      )
-  (clojure.edn/read-string "#inst \"1985-04-12T23:20:50.52Z\"")
-
-  java.time.LocalDate
-
-  (clojure.edn/read-string
-   "#object[java.time.LocalDateTime
-         \"0x43788de\"
-         \"2021-11-03T00:00:00.000000001\"]")
 
 ;java.time.LocalDateTime
 

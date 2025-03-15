@@ -1,8 +1,8 @@
 (ns ta.calendar.core-month-test
   (:require [clojure.test :refer :all]
             [tick.core :as t]
-            [ta.calendar.calendars :as cal]
-            [ta.calendar.core :refer [trailing-window calendar-seq fixed-window]]))
+            ;[ta.calendar.calendars :as cal]
+            [ta.calendar.core :refer [trailing-window]]))
 
 (defn to-est [dt-str]
   (t/in (t/date-time dt-str) "America/New_York"))
