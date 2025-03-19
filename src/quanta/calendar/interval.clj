@@ -5,11 +5,15 @@
   (move-next [this])
   (move-prior [this]))
 
-(defn next-seq [this]
-  (->> (iterate move-next this)
-       (map current)))
+;; seq are in window,
+;; but in window we do not apply i/current, 
+;; because we want to be able to modify the window still.
 
-(defn prior-seq [this]
-  (->> (iterate move-prior this)
-       (map current)))
+#_(defn next-seq [this]
+    (->> (iterate move-next this)
+         (map current)))
+
+#_(defn prior-seq [this]
+    (->> (iterate move-prior this)
+         (map current)))
 
