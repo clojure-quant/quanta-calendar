@@ -1,5 +1,6 @@
 {:paths ["src" "test"]
- :deps {io.github.clojure-quant/quanta {:local/root "../" :deps/manifest :deps}
-        }
-
+ :deps {com.taoensso/nippy {:mvn/version "3.4.2"}
+        techascent/tech.io {:mvn/version "4.31"}
+        io.github.clojure-quant/quanta-calendar {:local/root "../" :deps/manifest :deps}}
+;
  }

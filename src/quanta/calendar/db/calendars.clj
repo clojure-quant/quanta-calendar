@@ -2,8 +2,6 @@
   (:require
    [tick.core :as t]))
 
-; old: ta.calendar.calendars
-
 (def week-5
   (sorted-set
    t/MONDAY t/TUESDAY t/WEDNESDAY

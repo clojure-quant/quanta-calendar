@@ -116,9 +116,6 @@
 
   (def s (next-upcoming-close-dayfraction :m5 (t/instant)))
 
-  (take 2 (i/next-seq s))
-  (take 10 (i/next-seq s))
-
 ;
   )
 
