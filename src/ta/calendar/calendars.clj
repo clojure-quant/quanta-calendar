@@ -42,7 +42,7 @@
    :us24 {:open (t/new-time 0 0 0)
           :close (t/new-time 0 0 0)
           :week week-5
-          :timezone "America/New_York"}
+          :timezone "UTC"}
    :eu {:open (t/new-time 9 0 0)
         :close (t/new-time 17 0 0)
         :week week-5
