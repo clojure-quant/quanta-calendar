@@ -1,4 +1,4 @@
-(ns demo.window
+(ns quanta.notebook.calendar.window
   (:require
    [tick.core :as t]
    [tablecloth.api :as tc]

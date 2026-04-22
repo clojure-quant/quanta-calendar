@@ -1,4 +1,4 @@
-(ns demo.compress
+(ns quanta.notebook.calendar.compress
   (:require
    [tick.core :as t]
    [tablecloth.api :as tc]

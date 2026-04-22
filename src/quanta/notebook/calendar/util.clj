@@ -1,4 +1,4 @@
-(ns demo.util
+(ns quanta.notebook.calendar.util
   (:require
    [clojure.string :as str]
    [tablecloth.api :as tc]
@@ -14,7 +14,8 @@
     (io/put-nippy! s ds)))
 
 (defn load-ds [asset]
-  (let [filename (str "../data/" asset ".nippy.gz")
+  (let [filename (str "demo-data/" asset ".nippy.gz")
+        filename (java-io/resource filename)
         s (io/gzip-input-stream filename)
         ds (io/get-nippy s)]
     ds))

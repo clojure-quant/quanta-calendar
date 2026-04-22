@@ -1,4 +1,4 @@
-(ns demo.env
+(ns quanta.notebook.calendar.env
   (:require
    [missionary.core :as m]
    [tick.core :as t]

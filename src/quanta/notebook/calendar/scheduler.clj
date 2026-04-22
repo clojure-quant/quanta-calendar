@@ -1,4 +1,4 @@
-(ns demo.scheduler
+(ns quanta.notebook.calendar.scheduler
   (:require
    [missionary.core :as m]
    [quanta.calendar.interval :as i]

@@ -1,4 +1,4 @@
-(ns demo.interval
+(ns quanta.notebook.calendar.interval
   (:require
    [tick.core :as t]
    [quanta.calendar.interval :as i]

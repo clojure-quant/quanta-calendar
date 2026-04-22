@@ -1,4 +1,4 @@
-(ns demo.info
+(ns quanta.notebook.calendar.info
   (:require
    [tick.core :as t]
    [quanta.calendar.calendar-info :refer [market-info gather-calendar]]))

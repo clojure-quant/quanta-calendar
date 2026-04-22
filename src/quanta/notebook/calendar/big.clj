@@ -1,12 +1,13 @@
-(ns demo.big
+(ns quanta.notebook.calendar.big
   (:require
-   [demo.util :refer [load-ds print-ds]]
-   [quanta.calendar.ds.compress :refer [compress-to-calendar]]
    [tick.core :as t]
    [tablecloth.api :as tc]
+   [quanta.calendar.ds.compress :refer [compress-to-calendar]]
    [quanta.calendar.window :as w]
    [quanta.calendar.ds.window :refer [window->ds join-aligned-bar-ds align-bars get-aligned-columns]]
-   [ta.calendar.align :refer [align-to-calendar]]))
+   [ta.calendar.align :refer [align-to-calendar]]
+   [quanta.notebook.calendar.util :refer [load-ds print-ds]]
+   ))
 
 (def eurchf (load-ds "EURCHF"))
 (def gbpjpy (load-ds "GBPJPY"))
