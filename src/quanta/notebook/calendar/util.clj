@@ -9,12 +9,12 @@
   (:import (java.io FileNotFoundException)))
 
 (defn save-ds [asset ds]
-  (let [filename (str "../data/" asset ".nippy.gz")
+  (let [filename (str "../demodata/" asset ".nippy.gz")
         s (io/gzip-output-stream! filename)]
     (io/put-nippy! s ds)))
 
 (defn load-ds [asset]
-  (let [filename (str "demo-data/" asset ".nippy.gz")
+  (let [filename (str "demodata/" asset ".nippy.gz")
         filename (java-io/resource filename)
         s (io/gzip-input-stream filename)
         ds (io/get-nippy s)]
@@ -25,6 +25,7 @@
       (p/print-range :all)))
 
 (comment
+  (java-io/resource "demodata/EURCHF.nippy.gz")
   (load-ds "EURCHF")
   (load-ds "GBPJPY")
   (load-ds "USDJPY")

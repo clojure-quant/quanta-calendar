@@ -6,7 +6,8 @@
    [tech.v3.tensor :as dtt]
    [tech.v3.dataset :as tds]
    [tablecloth.api :as tc]
-   [quanta.calendar.window :as w]))
+   [quanta.calendar.window :as w]
+   [quanta.calendar.ds.nil :as nil-fill]))
 
 (defn window->ds
   "converts a calendar window to a dataset. 
@@ -22,7 +23,7 @@
 (def max-dt
   (t/max-of-type (t/instant)))
 
-(defn join-aligned-bar-ds
+(defn create-idx-links
   "returns a column with the size of calendar-ds.
    column is of type integer, and represents indices of the 
    bar-ds that match the :date column. If no date match is found, 
@@ -60,10 +61,43 @@
          (into []) ; into makes this calculation not lazy.
          )))
 
-(defn align-asset-idx [calendar-ds asset-name bar-ds]
-  (tc/add-column calendar-ds
-                 asset-name
-                 (join-aligned-bar-ds calendar-ds bar-ds)))
+(def fill-nil-dict
+  {:fill-forward nil-fill/fill-forward
+   :fill-start-backward nil-fill/fill-start-backward
+   :fill-forward-start-backward nil-fill/fill-forward-start-backward
+   :none identity})
+
+(defn add-asset-idx-col
+  [calendar-ds asset-name bar-ds fill-nil-strategy]
+  (let [fill-nil-fn (get fill-nil-dict fill-nil-strategy)
+        idx-link-col (-> (create-idx-links calendar-ds bar-ds)
+                         (fill-nil-fn))]
+    (tc/add-column calendar-ds
+                   asset-name
+                   idx-link-col)))
+
+(defn align-bars
+  "returns a dataset with cols:
+     :date from calendar-ds
+     one column for each bar-ds with column-name asset-name
+        the value of the column is the linked index.
+     data? column that is true if all columns are linked"
+  [calendar-ds asset-ds-map fill-nil-strategy]
+  (let [process-asset (fn [ds [asset-name bar-ds]]
+                        (add-asset-idx-col ds asset-name bar-ds fill-nil-strategy))]
+    (reduce process-asset calendar-ds asset-ds-map)))
+
+(defn aligned-ds-map
+  "calendar-ds is a ds that defines :date column.
+   asset-ds-map is a map with key asset and value a ds data (typically bars) with :date column
+   fill-nil-strategy is a keyword: :fill-forward-start-backward, :fill-forward, :fill-start-backward, :none"
+
+  [calendar-ds asset-ds-map fill-nil-strategy]
+  (let [index-ds (align-bars calendar-ds asset-ds-map fill-nil-strategy)]
+    (->> asset-ds-map
+         (map (fn [[asset unaligned-ds]]
+                [asset (tc/select-rows unaligned-ds (get index-ds asset))]))
+         (into {}))))
 
 (defn eager-and [x y]
   (-> (dfn/and x y)
@@ -82,39 +116,22 @@
      (into []) ; makes the result not lazy
      )))
 
-(defn align-bars
-  "returns a dataset with cols:
-     :date from calendar-ds
-     one column for each bar-ds with column-name asset-name
-        the value of the column is the linked index.
-     data? column that is true if all columns are linked"
-  [calendar-ds asset-name-seq bar-ds-seq]
-  (let [process-asset (fn [ds [asset-name bar-ds]]
-                        (align-asset-idx ds asset-name bar-ds))
-        ds (reduce process-asset calendar-ds (map vector asset-name-seq bar-ds-seq))]
-    (tc/add-column ds :data? (all-assets-have-data? ds asset-name-seq))))
-
-(defn get-aligned-columns
-  "input: - calendar-ds (a dataset that only contains :date column)
-          - asset-name-seq (a seq of asset names (strings))
-          - bar-ds-seq (a seq of datasets, one for  each asset, must contain :date and bar-ds-col columns)
-  returns a dataset with 
-     :date from calendar-ds, but with possibly less rows, so that only rows from :asset are 
-     taken that have a matching :date etnry
-     one column for each asset with name asset, and value from columns bar-ds-col"
-  [calendar-ds bar-ds-col asset-name-seq bar-ds-seq]
-  (let [ds (-> (align-bars calendar-ds asset-name-seq bar-ds-seq)
-               (tc/select-rows (fn [row] (= true (:data? row)))))
-        _ (println "data-count: " (tc/row-count ds))
-        asset-dict (->> (map (fn [asset bar-ds]
-                               [asset bar-ds]) asset-name-seq bar-ds-seq)
-                        (into {}))
-        get-data (fn [asset]
-                   (let [idx-col (get ds asset)
-                         bar-ds (get asset-dict asset)
-                         value-col (get bar-ds bar-ds-col)]
-                     (dtt/select value-col idx-col)))
-        add-data-asset (fn [ds asset]
-                         (tc/add-column ds asset (get-data asset)))]
-    (-> (reduce add-data-asset ds asset-name-seq)
+(defn drop-rows-with-missing-data
+  "input: - ds with :date and all other columsn are :asset column names
+   removes rows where not all asset columsn have a value. "
+  [ds]
+  (let [col-seq (->> ds
+                     tc/column-names
+                     (remove #(= :date %)))]
+    (-> ds
+        (tc/add-column :data? (all-assets-have-data? ds col-seq))
+        (tc/select-rows (fn [row] (= true (:data? row))))
         (tc/drop-columns [:data?]))))
+
+(defn multi-asset-col [asset-ds-map col]
+  (let [assets (keys asset-ds-map)
+        asset-0 (first assets)
+        ds (tc/select-columns (get asset-ds-map asset-0) [:date])]
+    (reduce (fn [ds asset]
+              (tc/add-column ds asset (-> (get asset-ds-map asset)
+                                          (get col)))) ds assets)))
