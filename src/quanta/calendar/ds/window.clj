@@ -20,9 +20,6 @@
                        (into []))]
     (tds/new-dataset {:key-fn (fn [_id] :date)} [close-asc])))
 
-(def max-dt
-  (t/max-of-type (t/instant)))
-
 (defn create-idx-links
   "returns a column with the size of calendar-ds.
    column is of type integer, and represents indices of the 
@@ -32,28 +29,16 @@
   (let [idx (volatile! 0)
         idx-max (tc/row-count bar-ds)
         date-col (:date bar-ds)
-        bar-dt (fn []
-                 ; check for idx is important, because (bar-dt) gets evaluated
-                 ; even if the idx is at idx-max.
-                 (let [i @idx]
-                   (if (= i idx-max)
-                     max-dt
-                     (get date-col @idx))))
         align (fn [dt]
-                ; skip past
-                (while (and (not (= idx idx-max))
-                            (t/< (bar-dt) dt))
+                ;; advance bar index while bar date is strictly before calendar date
+                (while (and (< @idx idx-max)
+                            (t/< (get date-col @idx) dt))
                   (vswap! idx inc))
-                (if (and (not (= idx idx-max))
-                         (t/= (bar-dt) dt))
-                  ; date match - return index
-                  ; avoid skip past, as by default we expect to have aligned bard.
-                  (let [i @idx] ; idx might be increased before
-                    (when (not (= idx idx-max))
-                      (vswap! idx inc))
-                    i ; return index
-                    )
-                  ; no date match - we must be in the future, so no match
+                (if (and (< @idx idx-max)
+                         (t/= (get date-col @idx) dt))
+                  (let [i @idx]
+                    (vswap! idx inc)
+                    i)
                   nil))]
     ; emap does not work when there are missing values, it cannot return nil.
     ;(dtype/clone (dtype/emap align :int64 (:date calendar-ds)))
