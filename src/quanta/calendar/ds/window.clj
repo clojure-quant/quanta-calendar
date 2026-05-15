@@ -81,7 +81,8 @@
   (let [index-ds (align-bars calendar-ds asset-ds-map fill-nil-strategy)]
     (->> asset-ds-map
          (map (fn [[asset unaligned-ds]]
-                [asset (tc/select-rows unaligned-ds (get index-ds asset))]))
+                [asset (-> (tc/select-rows unaligned-ds (get index-ds asset))
+                           (tc/add-column :date (:date calendar-ds)))]))
          (into {}))))
 
 (defn eager-and [x y]

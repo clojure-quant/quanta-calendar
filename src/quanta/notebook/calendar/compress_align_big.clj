@@ -7,7 +7,7 @@
    [quanta.calendar.ds.window :refer [window->ds create-idx-links align-bars
                                       aligned-ds-map multi-asset-col
                                       drop-rows-with-missing-data]]
-   [quanta.notebook.calendar.util :refer [load-ds print-ds]]))
+   [quanta.notebook.demo-datas.util :refer [load-ds print-ds]]))
 
 (def eurchf (load-ds "EURCHF"))
 (def gbpjpy (load-ds "GBPJPY"))

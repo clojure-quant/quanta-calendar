@@ -5,6 +5,7 @@
         tick/tick {:mvn/version "0.6.2"}
         scicloj/tablecloth {:mvn/version "7.059"} ; brings techml-dataset
         techascent/tech.ml.dataset {:mvn/version "7.059"} ; techml that fixes cloning bug.
+        io.github.clojure-quant/quanta-demo-data {:mvn/version "0.1.2"}
         ;;
         }
  :aliases
